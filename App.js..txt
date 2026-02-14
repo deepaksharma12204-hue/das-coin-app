@@ -1,0 +1,45 @@
+import React, { useState, useEffect } from 'react';
+import { Zap, Pickaxe, Users, Trophy, Hammer, Brain, Briefcase, TrendingUp } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// --- ADDED: Telegram SDK Setup ---
+// This part helps the app know who the user is from Telegram
+const tg = window.Telegram?.WebApp;
+
+const formatNumber = (num) => {
+  if (num >= 1000000) return (num / 1000000).toFixed(2) + 'M';
+  if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+  return Math.floor(num).toString();
+};
+
+export default function App() {
+  const [balance, setBalance] = useState(() => parseInt(localStorage.getItem('das_balance')) || 0);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // When the app opens in Telegram, this runs
+    if (tg) {
+      tg.ready(); // Tells Telegram the app is loaded
+      tg.expand(); // Opens the app to full screen
+      setUser(tg.initDataUnsafe?.user); // Gets User Name/ID
+    }
+  }, []);
+
+  // ... (All previous game logic remains the same) ...
+
+  return (
+    <div className="bg-black min-h-screen text-white font-sans overflow-hidden flex flex-col relative select-none">
+      {/* Welcome Message for the User */}
+      <div className="z-20 p-4 text-center">
+        {user ? (
+          <p className="text-indigo-400 text-xs font-bold">Welcome, {user.first_name}!</p>
+        ) : (
+          <p className="text-gray-500 text-xs italic">Playing as Guest</p>
+        )}
+      </div>
+
+      {/* Main Game UI (The rest of the code from before) */}
+      {/* ... */}
+    </div>
+  );
+}
